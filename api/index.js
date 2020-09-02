@@ -26,7 +26,8 @@ async function connectToDatabase(uri) {
 	return db
 }
 
-async function callPositions(lat, lon, address, zipcode) {
+// 61.190363, -149.819110
+async function callPositions(lat, lon, address, county) {
 	try {
 		const {data} = await axios({
 			method: 'get',
@@ -36,7 +37,7 @@ async function callPositions(lat, lon, address, zipcode) {
 				lat: lat, // only match on latitude if it is provided
 				lon: lon, // only match on longitude if it is provided
 				address: address, // only match on address if it is provided
-				county: zipcode, // only match on county if it is provided
+				county: county, // only match on county if it is provided
 				include_candidates: 1, // include candidates (1 = "yes")
 				include_office_holders: 1, // include office_holders (1 = "yes")
 				include_endorsements: 1, // include endorsements (1 = "yes")
@@ -96,7 +97,16 @@ function filterCriminalJustice(allPositions) {
 								headers: {
 									'x-api-key': process.env.BR_KEY_KATHERINE
 								}
-							}).then(res => res.data)
+							}).then(res => ({
+								name: `${res.data.first_name} ${res.data.last_name}`,
+								photo: res.data.photo_url,
+								endorsements: res.data.endorsements,
+								candidacies: res.data.candidacies,
+								experience: res.data.experience,
+								education: res.data.education,
+								issues: res.data.issues,
+								links: res.data.url
+							}))
 						)
 					)
 				)
