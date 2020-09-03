@@ -73,9 +73,9 @@ function filterCriminalJustice(allPositions) {
 			allPositions.positions.map(pos =>
 				resolveProperty(
 					{
-						positionID: pos.position_id,
-						positionName: pos.name,
-						normPositionName: pos.normalized_position.name.replace(
+						position_id: pos.position_id,
+						position_name: pos.name,
+						normalized_position_name: pos.normalized_position.name.replace(
 							/(\w+)[\/\/|\/](\w+)/,
 							'$1'
 						),
