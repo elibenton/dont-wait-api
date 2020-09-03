@@ -85,7 +85,10 @@ function filterCriminalJustice(allPositions) {
 						level: pos.normalized_position.level,
 						description: pos.description,
 						state: pos.state,
-						tier: pos.tier
+						tier: pos.tier,
+						candidates_meta: pos.candidates.map(cand => ({
+							party: cand.party_name
+						}))
 					},
 					'candidates',
 					Promise.all(
