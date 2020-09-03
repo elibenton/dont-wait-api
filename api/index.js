@@ -83,6 +83,7 @@ function filterCriminalJustice(allPositions) {
 							pos.normalized_position.id
 						),
 						level: pos.normalized_position.level,
+						description: pos.description,
 						state: pos.state,
 						tier: pos.tier
 					},
