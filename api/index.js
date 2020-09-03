@@ -123,11 +123,9 @@ const handler = async (req, res) => {
 
 	const allPositions = await callPositions(lat, lon, address, zipcode)
 	const filteredPositions = await filterCriminalJustice(allPositions)
-	console.log(filteredPositions[0])
 
 	// Get a database connection, cached or otherwise, using the connection string environment variable as the argument
-	const db = await connectToDatabase(process.env.MONGODB_URI)
-
+	// const db = await connectToDatabase(process.env.MONGODB_URI)
 	// Select the "users" collection from the database
 	// const collection = await db.collection('candidates')
 	// const users = await collection.find({}).toArray()
