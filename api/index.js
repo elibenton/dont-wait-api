@@ -120,6 +120,8 @@ function filterCriminalJustice(allPositions) {
 	}
 }
 
+async function callDBFirst(candidateID) {}
+
 function regroupPositions(filteredPositions) {
 	return _.mapValues(
 		_.groupBy(filteredPositions, 'normalized_position_name'),
