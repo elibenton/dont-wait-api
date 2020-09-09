@@ -75,20 +75,14 @@ function filterCriminalJustice(allPositions) {
 					{
 						position_id: pos.position_id,
 						position_name: pos.name,
-						normalized_position_name: pos.normalized_position.name.replace(
-							/(\w+)[\/\/|\/](\w+)/,
-							'$1'
-						),
+						normalized_position_name: pos.normalized_position.name,
 						tagged: criminalJusticePositions.test(
 							pos.normalized_position.id
 						),
 						level: pos.normalized_position.level,
 						description: pos.description,
 						state: pos.state,
-						tier: pos.tier,
-						candidates_meta: pos.candidates.map(cand => ({
-							party: cand.party_name
-						}))
+						tier: pos.tier
 					},
 					'candidates',
 					Promise.all(
@@ -103,13 +97,17 @@ function filterCriminalJustice(allPositions) {
 								}
 							}).then(res => ({
 								name: `${res.data.first_name} ${res.data.last_name}`,
+								party: cand.party_name,
+								incumbent: cand.incumbent,
+								updated_at: cand.updated_at,
+								type: cand.candidate_type,
+								links: cand.urls,
 								photo: res.data.photo_url,
 								endorsements: res.data.endorsements,
 								candidacies: res.data.candidacies,
 								experience: res.data.experience,
 								education: res.data.education,
-								issues: res.data.issues,
-								links: res.data.url
+								issues: res.data.issues
 							}))
 						)
 					)
