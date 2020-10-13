@@ -65,9 +65,9 @@ function resolveProperty(obj, name, promiseValue) {
 function filterCriminalJustice(allPositions) {
 	// Tag the response on whether they are related to criminal justice
 	try {
-		const criminalJusticePositions = new RegExp(
-			'1635|1620|1625|1500|1520|1510|1695|1610|1611|1615|1637|1685|1960|1530|1940|1230|975|955|958|966|944|1030|956|961|982|1140|962|912|985|1145|1146|1160|1324|980|981|972|959|750|755|2325|100|4036|4035|4034|4033|4010|4005|4052|4030|4022|4053|4470|4471|4479|4480|4481|4472|4476|4020|4500|4535|4520|4501|4000|3990|4051|4029|4031|4027|4040|4038|4037|4039|4054|4050|4032|4060|4490|1360|2324|2508|140|145|2090|2110|2000|2183'
-		)
+		const criminalJusticePositions = new RegExp('980|750|140')
+
+		const cjpTwo = new RegExp()
 
 		return Promise.all(
 			allPositions.positions.map(pos =>
