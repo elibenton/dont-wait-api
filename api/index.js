@@ -3,6 +3,10 @@ const url = require('url')
 const MongoClient = require('mongodb').MongoClient
 const axios = require('axios')
 
+const YEAH = new RegExp(
+	'2|3|4|5|20|40|100|110|130|140|145|600|610|750|755|975|980|982|985|1140|1145|1160|1500|1510|1520|1530|1610|1610|1611|1615|1620|1625|1625|1635|1637'
+)
+
 // Create cached connection variable
 let cachedDb = null
 
@@ -65,9 +69,6 @@ function resolveProperty(obj, name, promiseValue) {
 function filterCriminalJustice(allPositions) {
 	// Tag the response on whether they are related to criminal justice
 	try {
-		const YEAH = new RegExp(
-			'2|3|4|5|20|40|100|110|130|140|145|600|610|750|755|975|980|982|985|1140|1145|1160|1500|1510|1520|1530|1610|1610|1611|1615|1620|1625|1625|1635|1637'
-		)
 		const criminalJusticePosition = new RegExp('980|750|140')
 
 		return Promise.all(
@@ -77,6 +78,7 @@ function filterCriminalJustice(allPositions) {
 						position_id: pos.position_id,
 						position_name: pos.name,
 						normalized_position_name: pos.normalized_position.name,
+						normalized_position_id: pos.normalized_position.id,
 						tagged: YEAH.test(pos.normalized_position.id),
 						level: pos.normalized_position.level,
 						description: pos.description,
@@ -139,6 +141,7 @@ const handler = async (req, res) => {
 			lat: lat,
 			lon: lon,
 			result_count: allPositions.result_count,
+			normPositionIDs: YEAH,
 			data: filteredPositions // change to most up to date array
 		})
 		console.log('Success!')
