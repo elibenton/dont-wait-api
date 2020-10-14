@@ -65,7 +65,7 @@ function resolveProperty(obj, name, promiseValue) {
 function filterCriminalJustice(allPositions) {
 	// Tag the response on whether they are related to criminal justice
 	try {
-		const criminalJusticePositions = new RegExp('980|750|140')
+		const criminalJusticePosition = new RegExp('980|750|140')
 
 		return Promise.all(
 			allPositions.positions.map(pos =>
@@ -74,7 +74,7 @@ function filterCriminalJustice(allPositions) {
 						position_id: pos.position_id,
 						position_name: pos.name,
 						normalized_position_name: pos.normalized_position.name,
-						tagged: criminalJusticePositions.test(
+						tagged: criminalJusticePosition.test(
 							pos.normalized_position.id
 						),
 						level: pos.normalized_position.level,
