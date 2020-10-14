@@ -67,8 +67,6 @@ function filterCriminalJustice(allPositions) {
 	try {
 		const criminalJusticePositions = new RegExp('980|750|140')
 
-		const cjpTwo = new RegExp()
-
 		return Promise.all(
 			allPositions.positions.map(pos =>
 				resolveProperty(
