@@ -3,9 +3,139 @@ const url = require('url')
 const MongoClient = require('mongodb').MongoClient
 const axios = require('axios')
 
-const YEAH = new RegExp(
-	'2|3|4|5|20|40|100|110|130|140|145|600|610|750|755|975|980|982|985|1140|1145|1160|1500|1510|1520|1530|1610|1610|1611|1615|1620|1625|1625|1635|1637'
-)
+const normPostions = [
+	{name: 'US Senate', id: 2, include: true},
+	{name: 'US House Of Representatives', id: 3, include: true},
+	{name: 'State Legislative Upper House', id: 4, include: true},
+	{name: 'State Legislative Lower House', id: 5, include: true},
+	{name: 'Governor', id: 100, include: true},
+	{name: 'Lieutenant Governor', id: 110, include: true},
+	{name: 'Secretary of State', id: 130, include: true},
+	{name: 'State Attorney General', id: 140, include: true},
+	{name: 'State Public Defender', id: 145, include: true},
+	{name: 'State Senate', id: 600, include: true},
+	{name: 'State House of Representatives', id: 610, include: true},
+	{name: 'District Attorney', id: 750, include: true},
+	{name: 'District Public Defender', id: 755, include: true},
+	{name: 'County Legislative', id: 912, include: true},
+	{name: 'County Township Supervisor', id: 912, include: true},
+	{name: 'County Executive Board', id: 912, include: true},
+	{name: 'County Clerk', id: 944, include: true},
+	{name: 'County District Court Clerk', id: 944, include: true},
+	{name: 'County Chancery Court Clerk', id: 955, include: true},
+	{name: 'County Court Clerk', id: 956, include: true},
+	{name: 'County Comptroller', id: 956, include: true},
+	{name: 'County Chancery', id: 958, include: true},
+	{name: 'County Circuit Court Clerk', id: 958, include: true},
+	{name: 'County Superior Court Clerk', id: 959, include: true},
+	{name: 'County Criminal Court Clerk', id: 961, include: true},
+	{name: 'County Juvenile Court Clerk', id: 962, include: true},
+	{name: 'County Civil Court Clerk', id: 966, include: true},
+	{name: 'County Solicitor General', id: 972, include: true},
+	{name: 'County Attorney', id: 975, include: true},
+	{name: 'County Sheriff', id: 980, include: true},
+	{name: 'County Tax Assessor', id: 981, include: true},
+	{name: 'County Tax Collector', id: 981, include: true},
+	{name: 'County Deputy Sheriff', id: 982, include: true},
+	{name: 'County Marshal', id: 985, include: true},
+	{name: 'County Constable', id: 1030, include: true},
+	{name: 'County Jailer', id: 1140, include: true},
+	{name: 'County Prothonotary', id: 1145, include: true},
+	{name: 'County Court of Common Pleas Clerk', id: 1145, include: true},
+	{name: 'County Clerk of Courts', id: 1145, include: true},
+	{name: 'County Public Defender', id: 1160, include: true},
+	{name: 'County (High) Bailiff', id: 1230, include: true},
+	{name: 'County Public Saftey Board', id: 1324, include: true},
+	{name: 'Justice of the Peace (Nonjudicial)', id: 1360, include: true},
+	{name: 'City Executive', id: 1500, include: true},
+	{name: 'City Mayor ', id: 1500, include: true},
+	{name: 'City Legislative Chair', id: 1510, include: true},
+	{name: 'City President of Council', id: 1510, include: true},
+	{name: 'City Legislative', id: 1520, include: true},
+	{name: 'City Supervisor', id: 1530, include: true},
+	{name: 'City Police Chief', id: 1610, include: true},
+	{name: 'City Marshal', id: 1610, include: true},
+	{name: 'City Fire Commission', id: 1611, include: true},
+	{name: 'City Police Commission', id: 1615, include: true},
+	{name: 'City Constable', id: 1620, include: true},
+	{name: 'City Constable', id: 1625, include: true},
+	{name: 'City Trustee', id: 1625, include: true},
+	{name: 'City Attorney', id: 1635, include: true},
+	{name: 'City Prosecutor', id: 1637, include: true},
+	{name: 'City Public Advocate', id: 1685, include: true},
+	{name: 'City Mayoral Advisor', id: 1695, include: true},
+	{name: 'City Warden', id: 1940, include: true},
+	{name: 'City Public Safety Board', id: 1960, include: true},
+	{name: 'Township Mayor', id: 2000, include: true},
+	{name: 'Township Constable', id: 2090, include: true},
+	{name: 'Township Director of Law', id: 2110, include: true},
+	{name: 'Township Police Commission', id: 2183, include: true},
+	{name: 'Police District', id: 2324, include: true},
+	{name: 'Fire/Police (Joint)', id: 2325, include: true},
+	{name: 'Police/Sewer/Fire District (Joint)', id: 2508, include: true},
+	{name: 'Judicial Supreme Court - Chief Justice', id: 3990, include: true},
+	{name: 'Judicial Supreme Court', id: 4000, include: true},
+	{name: 'Judicial Appellate Court - Chief Justice', id: 4005, include: true},
+	{name: 'Judicial Appellate Court', id: 4010, include: true},
+	{name: 'Judicial Criminal Appellate Court', id: 4020, include: true},
+	{name: 'Judicial Commonwealth Court', id: 4022, include: true},
+	{name: 'Judicial Trial Court - General', id: 4027, include: true},
+	{name: 'Judicial Trial Court - Criminal', id: 4029, include: true},
+	{name: 'Judicial Circuit Court (1)', id: 4030, include: true},
+	{name: 'Judicial Trial Court - Drug', id: 4031, include: true},
+	{name: 'Judicial Trial Court Associate', id: 4032, include: true},
+	{name: 'Judical Trial Court - Probate', id: 4033, include: true},
+	{name: 'Judical Trial Court - Juvenile', id: 4034, include: true},
+	{name: 'Judical Trial Court - Domestic//Family', id: 4035, include: true},
+	{name: 'Judical Trial Court - Chancery', id: 4036, include: true},
+	{
+		name: 'Judicial Trial Court - Juvenile/Probate (Joint)',
+		id: 4037,
+		include: true
+	},
+	{
+		name: 'Judicial Trial Court - Juvenile/Domestic (Joint)',
+		id: 4038,
+		include: true
+	},
+	{
+		name: 'Judicial Trial Court - Juvenile/Probate/Domestic (Joint)',
+		id: 4039,
+		include: true
+	},
+	{
+		name: 'Judicial Trial Court - General/Domestic (Joint)',
+		id: 4040,
+		include: true
+	},
+	{name: 'Judicial Trial Court (Inferior)', id: 4050, include: true},
+	{name: 'Judicial Supreme Court - Retention', id: 4051, include: true},
+	{name: 'Judicial Appellate Court - Retention', id: 4052, include: true},
+	{name: 'Judicial Commonwealth Court - Retention', id: 4053, include: true},
+	{name: 'Judicial Trial Court - Retention', id: 4054, include: true},
+	{name: 'Judicial Trial Court Subcircuit', id: 4060, include: true},
+	{name: 'Judicial County Court', id: 4470, include: true},
+	{name: 'Judicial County Court - Chief Magistrate', id: 4471, include: true},
+	{name: 'Judicial County Court - Magistrate', id: 4472, include: true},
+	{
+		name: 'Judicial County Court - Probate/Magistrate (Joint)',
+		id: 4476,
+		include: true
+	},
+	{name: 'Judicial County Court - Civil', id: 4478, include: false},
+	{name: 'Judicial County Court - Criminal', id: 4479, include: true},
+	{name: 'Judicial County Court - Family', id: 4480, include: true},
+	{name: 'Judicial County Court - Juvenile', id: 4481, include: true},
+	{name: 'Judicial County Court - Traffic', id: 4482, include: false},
+	{name: 'Justice of the Peace (Judicial)', id: 4490, include: true},
+	{name: 'Judicial Local Court', id: 4500, include: true},
+	{name: 'Judicial Local Court Associate Judge', id: 4501, include: true},
+	{name: 'Judicial Local Court - Small Claims', id: 4520, include: true},
+	{name: 'Judicial Local Court - Traffic', id: 4530, include: false},
+	{name: 'Judicial Local Court - Housing', id: 4535, include: true}
+]
+
+const normPositionsRegExp = normPostions.filter(d => d.include).map(d => d.id)
 
 // Create cached connection variable
 let cachedDb = null
@@ -69,8 +199,6 @@ function resolveProperty(obj, name, promiseValue) {
 function filterCriminalJustice(allPositions) {
 	// Tag the response on whether they are related to criminal justice
 	try {
-		const criminalJusticePosition = new RegExp('980|750|140')
-
 		return Promise.all(
 			allPositions.positions.map(pos =>
 				resolveProperty(
@@ -79,7 +207,7 @@ function filterCriminalJustice(allPositions) {
 						position_name: pos.name,
 						normalized_position_name: pos.normalized_position.name,
 						normalized_position_id: pos.normalized_position.id,
-						tagged: YEAH.test(pos.normalized_position.id),
+						tagged: normPositionsRegExp.test(pos.normalized_position.id),
 						level: pos.normalized_position.level,
 						description: pos.description,
 						state: pos.state,
