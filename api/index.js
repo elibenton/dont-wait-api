@@ -135,7 +135,12 @@ const normPostions = [
 	{name: 'Judicial Local Court - Housing', id: 4535, include: true}
 ]
 
-const normPositionsRegExp = normPostions.filter(d => d.include).map(d => d.id)
+const normPositionsRegExp = RegExp(
+	normPostions
+		.filter(d => d.include)
+		.map(d => d.id)
+		.join('|')
+)
 
 // Create cached connection variable
 let cachedDb = null
