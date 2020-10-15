@@ -269,7 +269,7 @@ const handler = async (req, res) => {
 			lat: lat,
 			lon: lon,
 			result_count: allPositions.result_count,
-			normPositionIDs: YEAH,
+			normPositionIDs: normPostions,
 			data: filteredPositions // change to most up to date array
 		})
 		console.log('Success!')
