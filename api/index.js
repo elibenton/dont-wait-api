@@ -132,7 +132,7 @@ const normPostions = [
 	{name: 'Judicial Local Court Associate Judge', id: 4501, include: true},
 	{name: 'Judicial Local Court - Small Claims', id: 4520, include: true},
 	{name: 'Judicial Local Court - Traffic', id: 4530, include: false},
-	{name: 'Judicial Local Court - Housing', id: 4535, include: true}
+	{name: 'Judicial Local Court - Housing', id: 4535, include: false}
 ]
 
 const normPositionsRegExp = RegExp(
