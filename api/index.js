@@ -153,6 +153,7 @@ const starredPositionsRegExp = RegExp(
 		.map(d => d.id)
 		.join('|')
 )
+
 // Create cached connection variable
 let cachedDb = null
 
